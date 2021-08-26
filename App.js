@@ -5,7 +5,7 @@ const App = () => {
   const [count, setCount] = useState(0);
   const increaseCount = useCallback(() => {
     setCount(count + 1);
-    alert(count);
+    alert(`you clicked ${count} times`);
     return true;
   }, [count]);
 
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'white'
   },
   text: {
     fontSize: 18,

@@ -38,57 +38,90 @@
 
 // export default App;
 
-import React, {useState, Component} from 'react';
+// import React, {useState, Component} from 'react';
+// import {View, Text, StyleSheet, Button, BackHandler} from 'react-native';
+
+// const Context = React.createContext('default value');
+
+// export default class App extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       count: 0,
+//     };
+//   }
+//   backAction = () => {
+//     this.setState({count: this.state.count + 1});
+//     alert(`you clicked ${this.state.count} times`);
+//     return true;
+//   };
+//   componentDidMount() {
+//     BackHandler.addEventListener('hardwareBackPress', this.backAction);
+//   }
+//   componentWillUnmount() {
+//     BackHandler.removeEventListener('hardwareBackPress', this.backAction);
+//   }
+//   render() {
+//     return (
+//       <View style={styles.container}>
+//         <Context.Provider value={this.state.count}>
+//           <Child />
+//         </Context.Provider>
+//       </View>
+//     );
+//   }
+// }
+
+// class Child extends Component {
+//   render() {
+//     return (
+//       <View>
+//         <Context.Consumer>
+//           {data => <Text>count here is : {data} </Text>}
+//         </Context.Consumer>
+//       </View>
+//     );
+//   }
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: 'white',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });
+
+import React, {useState, useContext, createContext,useEffect} from 'react';
 import {View, Text, StyleSheet, Button, BackHandler} from 'react-native';
 
-const Context = React.createContext('default value');
+const Context = createContext('default value');
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      count: 0,
-    };
-  }
-  backAction = () => {
-    this.setState({count: this.state.count + 1});
-    alert(`you clicked ${this.state.count} times`);
-    return true;
-  };
-  componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.backAction);
-  }
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.backAction);
-  }
-  render() {
-    return (
-      <View style={styles.container}>
-        <Context.Provider value={this.state.count}>
-          <Child />
-        </Context.Provider>
-      </View>
-    );
-  }
+export default function App() {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const backAction = () => {
+      setCount(count + 1);
+      alert(`you clicked ${count} times`);
+      return true;
+    }
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
+    return () => backHandler.remove();
+  },[count])
+  return (
+  <Context.Provider value={count}>
+    <ChildComponent />
+  </Context.Provider>);
 }
 
-class Child extends Component {
-  render() {
-    return (
-      <View>
-        <Context.Consumer>
-          {data => <Text>count here is : {data} </Text>}
-        </Context.Consumer>
-      </View>
-    );
-  }
+function ChildComponent(props) {
+  var contextData = useContext(Context);
+  return (
+    <View>
+      <Context.Consumer>
+        {data => <Text>count here is : {data} </Text>}
+      </Context.Consumer>
+    </View>
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
